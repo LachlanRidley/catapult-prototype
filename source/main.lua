@@ -29,8 +29,10 @@ pd.start()
 local SCREEN_WIDTH <const> = 400
 local SCREEN_HEIGHT <const> = 240
 
-local CENTRE_X = SCREEN_WIDTH / 2
-local CENTRE_Y = SCREEN_HEIGHT / 2
+local slimeX = SCREEN_WIDTH / 2
+local slimeY = SCREEN_HEIGHT / 2
+local velocity = 0
+local angle = 0
 
 function Setup()
 	-- set the game up
@@ -47,18 +49,29 @@ end
 function pd.update()
 	gfx.clear()
 
-	local angle = 0
-
-	if not pd:isCrankDocked() then
+	if not pd:isCrankDocked() and velocity == 0 then
 		angle = pd.getCrankPosition()
 	end
 
-	local dx = 20 * math.sin(math.rad(angle))
-	local dy = 20 * -math.cos(math.rad(angle))
+	local dx = velocity * math.sin(math.rad(angle))
+	local dy = velocity * -math.cos(math.rad(angle))
 
-	gfx.drawLine(CENTRE_X, CENTRE_Y, CENTRE_X + dx, CENTRE_Y + dy)
+	slimeX += dx
+	slimeY += dy
 
-	gfx.drawText('Hello world!', 30, 30)
+	if pd.buttonJustPressed(pd.kButtonB) and velocity == 0 then
+		velocity = 10
+	end
+
+	if velocity > 0 then
+		velocity = math.max(0, velocity - 0.2)
+	end
+
+	local pointerOffsetX = 20 * math.sin(math.rad(angle))
+	local pointerOffsetY = 20 * -math.cos(math.rad(angle))
+
+	gfx.drawLine(slimeX, slimeY, slimeX + pointerOffsetX, slimeY + pointerOffsetY)
+	gfx.fillCircleAtPoint(slimeX, slimeY, 5)
 
 	gfx.sprite.redrawBackground()
 	gfx.sprite.update()
