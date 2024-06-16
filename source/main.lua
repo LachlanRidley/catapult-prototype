@@ -29,6 +29,9 @@ pd.start()
 local SCREEN_WIDTH <const> = 400
 local SCREEN_HEIGHT <const> = 240
 
+local CENTRE_X = SCREEN_WIDTH / 2
+local CENTRE_Y = SCREEN_HEIGHT / 2
+
 function Setup()
 	-- set the game up
 	pd.display.setRefreshRate(50)
@@ -42,6 +45,19 @@ function Setup()
 end
 
 function pd.update()
+	gfx.clear()
+
+	local angle = 0
+
+	if not pd:isCrankDocked() then
+		angle = pd.getCrankPosition()
+	end
+
+	local dx = 20 * math.sin(math.rad(angle))
+	local dy = 20 * -math.cos(math.rad(angle))
+
+	gfx.drawLine(CENTRE_X, CENTRE_Y, CENTRE_X + dx, CENTRE_Y + dy)
+
 	gfx.drawText('Hello world!', 30, 30)
 
 	gfx.sprite.redrawBackground()
