@@ -31,8 +31,12 @@ local SCREEN_HEIGHT <const> = 240
 
 local slimeX = SCREEN_WIDTH / 2
 local slimeY = SCREEN_HEIGHT / 2
-local velocity = 0
+
+local VELOCITY <const> = 20
+
 local angle = 0
+local dx = 0
+local dy = 0
 
 function Setup()
 	-- set the game up
@@ -49,22 +53,42 @@ end
 function pd.update()
 	gfx.clear()
 
-	if not pd:isCrankDocked() and velocity == 0 then
+	if not pd:isCrankDocked() then
 		angle = pd.getCrankPosition()
 	end
-
-	local dx = velocity * math.sin(math.rad(angle))
-	local dy = velocity * -math.cos(math.rad(angle))
 
 	slimeX += dx
 	slimeY += dy
 
-	if pd.buttonJustPressed(pd.kButtonB) and velocity == 0 then
-		velocity = 10
+	if dx < 0 then
+		dx = math.min(0, dx + 0.2)
+	elseif dx > 0 then
+		dx = math.max(0, dx - 0.2)
+	end
+	if dy < 0 then
+		dy = math.min(0, dy + 0.2)
+	elseif dy > 0 then
+		dy = math.max(0, dy - 0.2)
 	end
 
-	if velocity > 0 then
-		velocity = math.max(0, velocity - 0.2)
+	if slimeY >= SCREEN_HEIGHT then
+		slimeY = SCREEN_HEIGHT
+	end
+
+	if slimeX <= 0 then
+		slimeX = 0
+		dx = -dx
+	elseif slimeX >= SCREEN_WIDTH then
+		slimeX = SCREEN_WIDTH
+		dx = -dx
+	end
+
+	gfx.drawText("angle " .. angle, 10, 10)
+	gfx.drawText("dx " .. dx, 10, 20)
+
+	if pd.buttonJustPressed(pd.kButtonB) then
+		dx = VELOCITY * math.sin(math.rad(angle))
+		dy = VELOCITY * -math.cos(math.rad(angle))
 	end
 
 	local pointerOffsetX = 20 * math.sin(math.rad(angle))
