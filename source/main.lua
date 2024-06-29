@@ -39,6 +39,18 @@ local HOP_VELOCITY = 890
 
 local FRICTION_CONSTANT <const> = 0.1
 
+---@class Wall: _Sprite
+Wall = class("Wall").extends(gfx.sprite) or Wall
+function Wall:init(x, y, w, h)
+  Wall.super.init(self)
+  self:moveTo(x, y)
+  self:setSize(w, h)
+end
+
+function Wall:draw(x, y, w, h)
+  gfx.drawRoundRect(x, y, w, h, 5)
+end
+
 ---@class Slime: _Sprite
 Slime = class('Slime').extends(gfx.sprite) or Slime
 
@@ -105,6 +117,9 @@ function Setup()
 	local menu = playdate.getSystemMenu()
 	slime = Slime(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
 	slime:add()
+
+  local wall = Wall(100, 50, 50, 25)
+  wall:add()
 
 	-- menu:addMenuItem("Restart game", function()
 	-- 	RestartGame()
