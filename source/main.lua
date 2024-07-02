@@ -49,14 +49,20 @@ Wall = class("Wall").extends(gfx.sprite) or Wall
 ---@param h integer
 function Wall:init(x, y, w, h)
 	Wall.super.init(self)
+
+	local wallImage = gfx.image.new(w, h)
+	gfx.pushContext(wallImage)
+	gfx.drawRoundRect(0, 0, w, h, 5)
+	gfx.popContext()
+
+	self:setImage(wallImage)
+
 	self:moveTo(x, y)
 	self:setSize(w, h)
 	self:setCollideRect(0, 0, self:getSize())
 end
 
-function Wall:draw(x, y, w, h)
-	gfx.drawRoundRect(x, y, w, h, 5)
-end
+function Wall:draw(x, y, w, h) end
 
 ---@class Slime: _Sprite
 Slime = class("Slime").extends(gfx.sprite) or Slime
