@@ -1,7 +1,7 @@
 set shell := ["powershell.exe", "-c"]
 
-build:
-  pdc source game.pdx
-
 run: build
-  PlaydateSimulator.exe game.pdx
+    PlaydateSimulator.exe game.pdx
+
+build:
+    pdc source game.pdx
