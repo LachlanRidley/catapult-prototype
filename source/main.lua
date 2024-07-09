@@ -63,6 +63,8 @@ function Wall:init(x, y, w, h)
 end
 
 ---@class Slime: _Sprite
+---@field angle number
+---@field stuck boolean
 Slime = class("Slime").extends(gfx.sprite) or Slime
 
 ---@type Slime
@@ -74,50 +76,71 @@ function Slime:init(x, y)
 	self:moveTo(x, y)
 
 	self.angle = 0
+	self.stuck = false
 
 	self:setSize(40, 40)
 	self:setCollideRect(15, 15, 10, 10)
 end
 
 function Slime:update()
-	if not pd:isCrankDocked() then
-		self.angle = pd.getCrankPosition()
+	if not pd:isCrankDocked() and self.stuck then
+		local newAngle = pd.getCrankPosition()
+
+		if newAngle ~= self.angle then
+			-- sprites don't automatically get marked as dirty unless they move
+			self:markDirty()
+		end
+
+		self.angle = newAngle
 	end
 
-	-- gravity
-	self.velocity = self.velocity + GRAVITY_STEP
+	if not self.stuck then
+		-- gravity
+		self.velocity = self.velocity + GRAVITY_STEP
 
-	-- friction
-	self.velocity = self.velocity + self.velocity:scaledBy(-FRICTION_CONSTANT)
+		-- friction
+		self.velocity = self.velocity + self.velocity:scaledBy(-FRICTION_CONSTANT)
 
-	local velocityStep = self.velocity * DT
-	self:moveWithCollisions(self.x + velocityStep.dx, self.y + velocityStep.dy)
+		local velocityStep = self.velocity * DT
+		local _, _, _, collisionCount = self:moveWithCollisions(self.x + velocityStep.dx, self.y + velocityStep.dy)
 
-	if self.y >= SCREEN_HEIGHT then
-		self.velocity.dy = 0
-		self.velocity.dx = 0
-		self:moveWithCollisions(self.x, SCREEN_HEIGHT)
+		if collisionCount > 0 then
+			self.stuck = true
+			self.velocity.dx = 0
+			self.velocity.dy = 0
+		end
+
+		if self.y >= SCREEN_HEIGHT then
+			self.stuck = true
+			self.velocity.dy = 0
+			self.velocity.dx = 0
+			self:moveTo(self.x, SCREEN_HEIGHT)
+		end
+
+		if self.x <= 0 then
+			self:moveTo(0, self.y)
+			self.velocity.dx = -self.velocity.dx
+		elseif self.x >= SCREEN_WIDTH then
+			self:moveTo(SCREEN_WIDTH, self.y)
+			self.velocity.dx = -self.velocity.dx
+		end
 	end
 
-	if self.x <= 0 then
-		self:moveWithCollisions(0, self.y)
-		self.velocity.dx = -self.velocity.dx
-	elseif self.x >= SCREEN_WIDTH then
-		self:moveWithCollisions(SCREEN_WIDTH, self.y)
-		self.velocity.dx = -self.velocity.dx
-	end
-
-	if pd.buttonJustPressed(pd.kButtonB) then
+	if self.stuck and pd.buttonJustPressed(pd.kButtonB) then
+		self.stuck = false
 		self.velocity.dx = HOP_VELOCITY * math.sin(math.rad(self.angle))
 		self.velocity.dy = HOP_VELOCITY * -math.cos(math.rad(self.angle))
 	end
 end
 
 function Slime:draw()
-	local pointerOffsetX = 20 * math.sin(math.rad(self.angle))
-	local pointerOffsetY = 20 * -math.cos(math.rad(self.angle))
+	if self.stuck then
+		local pointerOffsetX = 20 * math.sin(math.rad(self.angle))
+		local pointerOffsetY = 20 * -math.cos(math.rad(self.angle))
 
-	gfx.drawLine(20, 20, 20 + pointerOffsetX, 20 + pointerOffsetY)
+		gfx.drawLine(20, 20, 20 + pointerOffsetX, 20 + pointerOffsetY)
+	end
+
 	gfx.fillCircleAtPoint(20, 20, 5)
 end
 
@@ -143,6 +166,7 @@ function pd.update()
 
 	gfx.drawText("angle " .. slime.angle, 10, 10)
 	gfx.drawText("dx " .. slime.velocity.dx, 10, 30)
+	gfx.drawText("stuck " .. tostring(slime.stuck), 10, 50)
 
 	timer.updateTimers()
 end
