@@ -52,7 +52,7 @@ function Wall:init(x, y, w, h)
 
 	local wallImage = gfx.image.new(w, h)
 	gfx.pushContext(wallImage)
-	gfx.drawRoundRect(0, 0, w, h, 5)
+	gfx.drawRect(0, 0, w, h)
 	gfx.popContext()
 
 	self:setImage(wallImage)
@@ -61,8 +61,6 @@ function Wall:init(x, y, w, h)
 	self:setSize(w, h)
 	self:setCollideRect(0, 0, self:getSize())
 end
-
-function Wall:draw(x, y, w, h) end
 
 ---@class Slime: _Sprite
 Slime = class("Slime").extends(gfx.sprite) or Slime
