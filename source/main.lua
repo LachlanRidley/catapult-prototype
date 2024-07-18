@@ -60,6 +60,27 @@ function Wall:init(x, y, w, h)
 	self:moveTo(x, y)
 	self:setSize(w, h)
 	self:setCollideRect(0, 0, self:getSize())
+
+	self:add()
+end
+
+---@class Goal: _Sprite
+Goal = class("Goal").extends(gfx.sprite) or Goal
+
+function Goal:init(x, y, w, h)
+	Goal.super.init(self)
+	self:moveTo(x, y)
+	self:setSize(w, h)
+
+	local goalImage = gfx.image.new(w, h)
+	gfx.pushContext(goalImage)
+	gfx.setDitherPattern(0.5, gfx.image.kDitherTypeBayer2x2)
+	gfx.fillRect(0, 0, w, h)
+	gfx.popContext()
+
+	self:setImage(goalImage)
+
+	self:add()
 end
 
 ---@class Slime: _Sprite
@@ -69,6 +90,9 @@ Slime = class("Slime").extends(gfx.sprite) or Slime
 
 ---@type Slime
 local slime = nil
+
+---@type Goal
+local goal = nil
 
 function Slime:init(x, y)
 	Slime.super.init(self)
@@ -80,6 +104,8 @@ function Slime:init(x, y)
 
 	self:setSize(40, 40)
 	self:setCollideRect(15, 15, 10, 10)
+
+	self:add()
 end
 
 function Slime:update()
@@ -162,6 +188,12 @@ function Setup()
 end
 
 function pd.update()
+	if goal:getBoundsRect():containsPoint(slime:getPosition()) then
+		goal:remove()
+	else
+		goal:add()
+	end
+
 	gfx.sprite.update()
 
 	gfx.drawText("angle " .. slime.angle, 10, 10)
