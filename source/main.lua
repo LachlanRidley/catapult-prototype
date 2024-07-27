@@ -60,8 +60,10 @@ function LoadTheClimb()
 	slime = Slime(SCREEN_WIDTH / 2, SCREEN_HEIGHT - 20)
 
 	local wallWidth = SCREEN_WIDTH / 2 - 45
-	Wall(0, 0, wallWidth, SCREEN_HEIGHT)
-	Wall(SCREEN_WIDTH - wallWidth, 0, wallWidth, SCREEN_HEIGHT)
+	walls = {
+		Wall(0, 0, wallWidth, SCREEN_HEIGHT),
+		Wall(SCREEN_WIDTH - wallWidth, 0, wallWidth, SCREEN_HEIGHT)
+	}
 
 	goal = Goal(SCREEN_WIDTH / 2, 10, SCREEN_WIDTH - (wallWidth * 2), 20)
 end
@@ -69,31 +71,45 @@ end
 function LoadPlayground()
 	slime = Slime(SCREEN_WIDTH / 2 - 30, SCREEN_HEIGHT / 2)
 
-	Wall(SCREEN_WIDTH / 2, SCREEN_HEIGHT - 25, 25, 25)
-	Wall(SCREEN_WIDTH / 2 + 25, SCREEN_HEIGHT - 25 - 25, 25, 25)
-	Wall(SCREEN_WIDTH / 2 + (25 * 2), SCREEN_HEIGHT - 25 - (25 * 2), 25, 25)
-	Wall(SCREEN_WIDTH / 2 + (25 * 3), SCREEN_HEIGHT - 25 - (25 * 3), 25, 25)
-	Wall(SCREEN_WIDTH / 2 + (25 * 4), SCREEN_HEIGHT - 25 - (25 * 4), 25, 25)
-	Wall(SCREEN_WIDTH / 2 + (25 * 5), SCREEN_HEIGHT - 25 - (25 * 5), 25, 25)
+	walls = {
+		Wall(SCREEN_WIDTH / 2, SCREEN_HEIGHT - 25, 25, 25),
+		Wall(SCREEN_WIDTH / 2 + 25, SCREEN_HEIGHT - 25 - 25, 25, 25),
+		Wall(SCREEN_WIDTH / 2 + (25 * 2), SCREEN_HEIGHT - 25 - (25 * 2), 25, 25),
+		Wall(SCREEN_WIDTH / 2 + (25 * 3), SCREEN_HEIGHT - 25 - (25 * 3), 25, 25),
+		Wall(SCREEN_WIDTH / 2 + (25 * 4), SCREEN_HEIGHT - 25 - (25 * 4), 25, 25),
+		Wall(SCREEN_WIDTH / 2 + (25 * 5), SCREEN_HEIGHT - 25 - (25 * 5), 25, 25)
+	}
 
 	spikes = { Spike(10, 10, 20, SCREEN_HEIGHT - 20) }
 
 	goal = Goal(SCREEN_WIDTH - 60, 150, 50, 50)
 end
 
+function UnloadLevel()
+	gfx.sprite.removeSprite(slime)
+	gfx.sprite.removeSprites(walls)
+	gfx.sprite.removeSprites(spikes)
+	gfx.sprite.removeSprite(goal)
+end
+
 ---@class Scene
 Scene = class("Scene").extends() or Scene
 
 function Scene:init(selectedLevelIndex)
-	self.level = LEVELS[selectedLevelIndex]
-
-	self.level:loader()
+	self.selectedLevelIndex = selectedLevelIndex
+	LEVELS[self.selectedLevelIndex].loader()
 end
 
 function Scene:update()
 	if goal:getBoundsRect():containsPoint(slime:getPosition()) then
-		goal:remove()
 		won = true
+		UnloadLevel()
+		self.selectedLevelIndex += 1
+		if self.selectedLevelIndex > #LEVELS then
+			self.selectedLevelIndex = 1
+		end
+
+		LEVELS[self.selectedLevelIndex].loader()
 	else
 		goal:add()
 	end
