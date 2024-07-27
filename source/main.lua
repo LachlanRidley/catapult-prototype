@@ -199,10 +199,12 @@ function Slime:draw()
 	gfx.fillCircleAtPoint(20, 20, 5)
 end
 
+local currentScene
 function Setup()
 	-- set the game up
 	pd.display.setRefreshRate(FRAME_RATE)
 
+	currentScene = Scene()
 	LoadTheClimb()
 
 	-- set up game menu
@@ -234,7 +236,10 @@ function LoadPlayground()
 	goal = Goal(SCREEN_WIDTH - 60, 150, 50, 50)
 end
 
-function pd.update()
+---@class Scene: _Sprite
+Scene = class("Scene").extends(gfx.sprite) or Scene
+
+function Scene:update()
 	if goal:getBoundsRect():containsPoint(slime:getPosition()) then
 		goal:remove()
 		won = true
@@ -260,6 +265,10 @@ function pd.update()
 	end
 
 	timer.updateTimers()
+end
+
+function pd.update()
+	currentScene:update()
 end
 
 Setup()
