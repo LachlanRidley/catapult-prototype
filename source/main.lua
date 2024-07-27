@@ -253,7 +253,7 @@ function Scene:update()
 		goal:add()
 	end
 
-	for _, spike in ipairs(SpikesList) do
+	for spike in All(SpikesList) do
 		if spike:getBoundsRect():containsPoint(slime:getPosition()) then
 			dead = true
 			slime:remove()
