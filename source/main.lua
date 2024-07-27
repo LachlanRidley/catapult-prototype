@@ -239,6 +239,12 @@ end
 ---@class Scene
 Scene = class("Scene").extends() or Scene
 
+function Scene:init(selectedLevelIndex)
+	self.level = LEVELS[selectedLevelIndex]
+
+	self.level:loader()
+end
+
 function Scene:update()
 	if goal:getBoundsRect():containsPoint(slime:getPosition()) then
 		goal:remove()
@@ -288,7 +294,7 @@ function Menu:init()
 		table.insert(self.levelTexts, levelText)
 	end
 
-	self.menuText = playdate.graphics.sprite.new(self.levelTexts[self.selectedLevelIndex])
+	self.menuText = gfx.sprite.new(self.levelTexts[self.selectedLevelIndex])
 	self.menuText:setCenter(0, 0)
 	self.menuText:moveTo(10, 10)
 	self.menuText:add()
@@ -302,17 +308,11 @@ function Menu:update()
 		end
 		self.menuText:setImage(self.levelTexts[self.selectedLevelIndex])
 	elseif pd.buttonIsPressed(pd.kButtonA) then
-		self:unload()
-		local selectedLevel = LEVELS[self.selectedLevelIndex]
-		selectedLevel:loader()
-		currentScene = Scene()
+		self.menuText:remove()
+		currentScene = Scene(self.selectedLevelIndex)
 	end
 
 	gfx.sprite.update()
-end
-
-function Menu:unload()
-	self.menuText:remove()
 end
 
 function pd.update()
