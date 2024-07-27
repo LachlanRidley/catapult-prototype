@@ -7,6 +7,7 @@ import("CoreLibs/sprites")
 import("CoreLibs/timer")
 
 import("test")
+import("utils")
 
 local pd <const> = playdate
 local gfx <const> = pd.graphics
@@ -281,7 +282,7 @@ function Menu:init()
 	self.selectedLevelIndex = 1
 	self.levelTexts = {}
 
-	for _, level in ipairs(LEVELS) do
+	for level in All(LEVELS) do
 		local levelText = gfx.imageWithText(level.name, SCREEN_WIDTH, SCREEN_HEIGHT)
 
 		table.insert(self.levelTexts, levelText)
