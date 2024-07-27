@@ -56,6 +56,19 @@ function Setup()
 	local menu = playdate.getSystemMenu()
 end
 
+function LoadJump()
+	slime = Slime(10, 10)
+
+	local wallWidth = SCREEN_WIDTH / 2 - 45
+	local wallHeight = SCREEN_HEIGHT * 0.6
+	walls = {
+		Wall(0, SCREEN_HEIGHT - wallHeight, wallWidth, wallHeight),
+		Wall(SCREEN_WIDTH - wallWidth, SCREEN_HEIGHT - wallHeight, wallWidth, SCREEN_HEIGHT)
+	}
+
+	goal = Goal(SCREEN_WIDTH - 30, 76, 40, 40)
+end
+
 function LoadTheClimb()
 	slime = Slime(SCREEN_WIDTH / 2, SCREEN_HEIGHT - 20)
 
@@ -135,11 +148,14 @@ function Scene:update()
 end
 
 LEVELS = { {
-	name = "Playground",
-	loader = LoadPlayground
+	name = "Jump!",
+	loader = LoadJump
 }, {
 	name = "The Climb",
 	loader = LoadTheClimb
+}, {
+	name = "Playground",
+	loader = LoadPlayground
 } }
 
 ---@class Menu
