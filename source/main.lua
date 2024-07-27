@@ -279,22 +279,39 @@ Menu = class("Menu").extends() or Menu
 
 function Menu:init()
 	self.selectedLevelIndex = 1
+	self.levelTexts = {}
+
+	for _, level in ipairs(LEVELS) do
+		local levelText = gfx.imageWithText(level.name, SCREEN_WIDTH, SCREEN_HEIGHT)
+
+		table.insert(self.levelTexts, levelText)
+	end
+
+	self.menuText = playdate.graphics.sprite.new(self.levelTexts[self.selectedLevelIndex])
+	self.menuText:setCenter(0, 0)
+	self.menuText:moveTo(10, 10)
+	self.menuText:add()
 end
 
 function Menu:update()
-	local selectedLevel = LEVELS[self.selectedLevelIndex]
-	gfx.drawText(selectedLevel.name, 10, 10)
-
 	if pd.buttonJustPressed(pd.kButtonDown) then
-		gfx.clear()
 		self.selectedLevelIndex = self.selectedLevelIndex + 1
 		if self.selectedLevelIndex > #LEVELS then
 			self.selectedLevelIndex = 1
 		end
+		self.menuText:setImage(self.levelTexts[self.selectedLevelIndex])
 	elseif pd.buttonIsPressed(pd.kButtonA) then
+		self:unload()
+		local selectedLevel = LEVELS[self.selectedLevelIndex]
 		selectedLevel:loader()
 		currentScene = Scene()
 	end
+
+	gfx.sprite.update()
+end
+
+function Menu:unload()
+	self.menuText:remove()
 end
 
 function pd.update()
