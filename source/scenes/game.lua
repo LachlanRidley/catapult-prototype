@@ -10,7 +10,6 @@ Game = class("Game").extends() or Game
 function Game:init(selectedLevelIndex)
     self.selectedLevelIndex = selectedLevelIndex
     self.level = LEVELS[self.selectedLevelIndex].loader()
-    self.dead = false
 end
 
 function Game:update()
@@ -28,8 +27,8 @@ function Game:update()
 
     for spike in All(self.level.spikes or {}) do
         if spike:getBoundsRect():containsPoint(self.level.slime:getPosition()) then
-            self.dead = true
-            self.level.slime:remove()
+            UnloadLevel(self.level)
+            self.level = LEVELS[self.selectedLevelIndex].loader()
         end
     end
 
@@ -39,7 +38,6 @@ function Game:update()
         gfx.drawText("angle " .. self.level.slime.angle, 10, 10)
         gfx.drawText("dx " .. self.level.slime.velocity.dx, 10, 30)
         gfx.drawText("stuck " .. tostring(self.level.slime.stuck), 10, 50)
-        gfx.drawText("dead? " .. tostring(self.dead), 10, 90)
     end
 
     timer.updateTimers()
