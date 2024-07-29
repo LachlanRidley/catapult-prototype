@@ -14,7 +14,7 @@ import("sprites/spike")
 import("sprites/goal")
 
 import("test")
-import("utils")
+import("utils/all")
 
 local pd <const> = playdate
 local gfx <const> = pd.graphics
