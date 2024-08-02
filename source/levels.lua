@@ -52,13 +52,23 @@ local function loadPlayground()
     return level
 end
 
+---@class Level
+---@field order integer
+---@field name string
+---@field load function
+
+
+---@type Level[]
 LEVELS = { {
+    order = 1,
     name = "Jump!",
-    loader = loadJump
+    load = loadJump
 }, {
+    order = 2,
     name = "The Climb",
-    loader = loadTheClimb
+    load = loadTheClimb
 }, {
+    order = 3,
     name = "Playground",
-    loader = loadPlayground
+    load = loadPlayground
 } }

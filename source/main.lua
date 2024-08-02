@@ -38,7 +38,7 @@ print("unit test return value = " .. returnValue)
 
 pd.start()
 
-CurrentScene = nil
+local CurrentScene = nil
 
 function Setup()
 	-- set the game up
@@ -50,14 +50,25 @@ function Setup()
 	local menu = playdate.getSystemMenu()
 end
 
-function UnloadLevel(level)
-	gfx.sprite.removeSprite(level.slime)
-	gfx.sprite.removeSprites(level.walls)
-	gfx.sprite.removeSprites(level.spikes or {})
-	gfx.sprite.removeSprite(level.goal)
+function LoadLevel(levelIndex)
+	local selectedLevel = LEVELS[levelIndex]
+	assert(selectedLevel, "Level with index " .. levelIndex .. " does not exist")
+
+	CurrentScene = Game(selectedLevel)
+end
+
+function CompleteLevel(level)
+	local nextLevelIndex = level.order + 1
+	if nextLevelIndex > #LEVELS then
+		nextLevelIndex = 1
+	end
+
+	LoadLevel(nextLevelIndex)
 end
 
 function pd.update()
+	assert(CurrentScene ~= nil, "CurrentScene must be set before first update, have you called Setup()?")
+
 	CurrentScene:update()
 end
 
