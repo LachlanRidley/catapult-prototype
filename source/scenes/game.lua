@@ -45,6 +45,10 @@ function Game:update()
     timer.updateTimers()
 end
 
+function Game:unload()
+    self:ClearLevel()
+end
+
 function Game:StartLevel()
     self:ClearLevel()
 
