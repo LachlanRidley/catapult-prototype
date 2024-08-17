@@ -2,12 +2,10 @@
 
 ## build tools
 
-This repo includes some simple python build tools.
+This repo includes some simple build tools.
 
-To install the build tools:
+to run
 
-```bash
-pipx install .
+```sh
+lua -l setup tools.lua run
 ```
-
-To modify the build tools, make changes to tools.py and then reinstall (may need to use --force).
