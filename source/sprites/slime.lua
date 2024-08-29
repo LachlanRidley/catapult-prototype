@@ -1,5 +1,6 @@
 import('globals')
 import("CoreLibs/sprites")
+import("utils/animatedimage")
 
 local pd <const> = playdate
 local gfx <const> = pd.graphics
@@ -33,6 +34,13 @@ function Slime:init(x, y)
     self.stuck = false
 
     self:add()
+
+    local eyeTable = gfx.imagetable.new("images/slime-eye")
+    self.eyeAnimation = gfx.animation.loop.new(50, eyeTable, true)
+
+    self.eyeSprite = gfx.sprite.new(self.eyeAnimation:image())
+    self.eyeSprite:moveTo(10, 10)
+    self.eyeSprite:add()
 end
 
 function Slime:update()
@@ -84,6 +92,12 @@ function Slime:update()
         self.velocity.dx = HOP_VELOCITY * math.sin(math.rad(self.angle))
         self.velocity.dy = HOP_VELOCITY * -math.cos(math.rad(self.angle))
     end
+
+    -- update eye position
+    self.eyeSprite:moveTo(self.x - 6, self.y - 10)
+
+    -- update eye animation
+    self.eyeSprite:setImage(self.eyeAnimation:image())
 end
 
 function Slime:draw()
@@ -95,4 +109,9 @@ function Slime:draw()
     end
 
     gfx.fillCircleAtPoint(20, 20, 5)
+end
+
+function Slime:remove()
+    self.eyeSprite:remove()
+    Slime.super.remove(self)
 end
