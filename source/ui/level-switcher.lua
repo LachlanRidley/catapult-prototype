@@ -1,31 +1,6 @@
 local pd <const> = playdate
 local gfx <const> = pd.graphics
 
----@class Menu
----@field switcher LevelSwitcher
-Menu = class("Menu").extends() or Menu
-
-function Menu:init()
-    self.switcher = LevelSwitcher(20, SCREEN_HEIGHT / 2)
-end
-
-function Menu:update()
-    if pd.buttonJustPressed(pd.kButtonDown) then
-        self.switcher:next()
-    elseif pd.buttonJustPressed(pd.kButtonUp) then
-        self.switcher:previous()
-    elseif pd.buttonIsPressed(pd.kButtonA) or pd.buttonIsPressed(pd.kButtonB) then
-        self:unload()
-        LoadLevel(self.switcher.selectedLevelIndex)
-    end
-
-    gfx.sprite.update()
-end
-
-function Menu:unload()
-    self.switcher:remove()
-end
-
 ---@class LevelSwitcher
 LevelSwitcher = class("LevelSwitcher").extends() or LevelSwitcher
 
