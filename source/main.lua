@@ -43,8 +43,6 @@ print("unit test return value = " .. returnValue)
 
 pd.start()
 
-local state = GameState.SetupMenu
-
 ---@type Level | nil
 local level
 ---@type Slime | nil
@@ -59,8 +57,12 @@ local goal
 ---@type LevelSwitcher | nil
 local levelSwitcher
 
+local clearLevel = false
+local startLevel = false
+local state = GameState.SetupMenu
+local currentLevelIndex = nil
+
 function Setup()
-	-- set the game up
 	pd.display.setRefreshRate(FRAME_RATE)
 
 	-- set up game menu
@@ -72,47 +74,32 @@ function Setup()
 	end)
 end
 
-function LoadLevel(levelIndex)
-	local selectedLevel = LEVELS[levelIndex]
-	assert(selectedLevel, "Level with index " .. levelIndex .. " does not exist")
-
-	level = selectedLevel
-end
-
-function AdvanceLevel()
-	assert(level)
-
-	local nextLevelIndex = level.order + 1
-	if nextLevelIndex > #LEVELS then
-		nextLevelIndex = 1
-	end
-
-	LoadLevel(nextLevelIndex)
-end
-
-function StartLevel()
-	ClearLevel()
-	assert(level ~= nil)
-
-	local levelContent = level.load()
-	slime = levelContent.slime
-	walls = levelContent.walls
-	spikes = levelContent.spikes
-	goal = levelContent.goal
-end
-
-function ClearLevel()
-	if slime then slime:remove() end
-	if walls then gfx.sprite.removeSprites(walls) end
-	if spikes then gfx.sprite.removeSprites(spikes) end
-	if goal then gfx.sprite.removeSprite(goal) end
-end
-
 function pd.update()
 	if state == GameState.SetupMenu then
-		ClearLevel()
+		clearLevel = true
 		levelSwitcher = LevelSwitcher(10, 10)
 		state = GameState.Menu
+	end
+
+	if clearLevel then
+		if slime then slime:remove() end
+		if walls then gfx.sprite.removeSprites(walls) end
+		if spikes then gfx.sprite.removeSprites(spikes) end
+		if goal then gfx.sprite.removeSprite(goal) end
+
+		clearLevel = false
+	end
+
+	if startLevel then
+		assert(currentLevelIndex ~= nil)
+
+		local levelContent = LEVELS[currentLevelIndex].load()
+		slime = levelContent.slime
+		walls = levelContent.walls
+		spikes = levelContent.spikes
+		goal = levelContent.goal
+
+		startLevel = false
 	end
 
 	if state == GameState.Menu then
@@ -123,29 +110,34 @@ function pd.update()
 		elseif pd.buttonJustPressed(pd.kButtonUp) then
 			levelSwitcher:previous()
 		elseif pd.buttonIsPressed(pd.kButtonA) or pd.buttonIsPressed(pd.kButtonB) then
-			LoadLevel(levelSwitcher.selectedLevelIndex)
+			currentLevelIndex = levelSwitcher.selectedLevelIndex
+			startLevel = true
+
 			levelSwitcher:remove()
 			levelSwitcher = nil
-			StartLevel()
 			state = GameState.GoGame
 		end
 	elseif state == GameState.GoGame then
 		assert(goal ~= nil)
 		assert(slime ~= nil)
 		if goal:getBoundsRect():containsPoint(slime:getPosition()) then
-			AdvanceLevel()
-			StartLevel()
+			currentLevelIndex = currentLevelIndex + 1
+			if currentLevelIndex > #LEVELS then
+				currentLevelIndex = 1
+			end
+
+			clearLevel = true
+			startLevel = true
 		end
 
 		for spike in All(spikes or {}) do
 			if spike:getBoundsRect():containsPoint(slime:getPosition()) then
-				StartLevel()
+				startLevel = true
 			end
 		end
 	end
 
 	gfx.sprite.update()
-
 
 	if DEBUG and state == GameState.GoGame then
 		assert(slime)
