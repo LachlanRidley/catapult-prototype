@@ -12,12 +12,15 @@ import("sprites/slime")
 import("sprites/wall")
 import("sprites/spike")
 import("sprites/goal")
+import("sprites/level")
 
 import("ui/level-switcher")
 
 import("levels")
 
 import("test")
+
+import("utils/LDtk")
 import("utils/all")
 
 local pd <const> = playdate
@@ -53,6 +56,9 @@ local walls
 local spikes
 ---@type Goal | nil
 local goal
+
+---@type _TileMap | nil
+local tilemap
 
 ---@type LevelSwitcher | nil
 local levelSwitcher
@@ -91,13 +97,19 @@ function pd.update()
 	end
 
 	if startLevel then
-		assert(currentLevelIndex ~= nil)
+		-- assert(currentLevelIndex ~= nil)
 
-		local levelContent = LEVELS[currentLevelIndex].load()
+		-- local levelContent = LEVELS[currentLevelIndex].load()
+		local levelContent = LEVELS[1].load()
 		slime = levelContent.slime
-		walls = levelContent.walls
-		spikes = levelContent.spikes
+		-- walls = levelContent.walls
+		-- spikes = levelContent.spikes
 		goal = levelContent.goal
+
+		LDtk.load("world.ldtk")
+		LDtk.load_level("Level_0")
+		tilemap = LDtk.create_tilemap("Level_0")
+		local level = Level(tilemap)
 
 		startLevel = false
 	end

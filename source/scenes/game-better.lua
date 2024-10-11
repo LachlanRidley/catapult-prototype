@@ -10,7 +10,7 @@ local timer <const> = pd.timer
 ---@field slime Slime | nil
 ---@field walls Wall[] | nil
 ---@field spikes Spikes[] | nil
----@field goal Goal | nil
+---@field goal Level | nil
 GameBetter = class("GameBetter").extends() or GameBetter
 
 ---Runs a level
