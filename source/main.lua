@@ -6,7 +6,7 @@ import("CoreLibs/graphics")
 import("CoreLibs/sprites")
 import("CoreLibs/timer")
 
-import('globals')
+import("globals")
 
 import("sprites/slime")
 import("sprites/wall")
@@ -88,10 +88,18 @@ function pd.update()
 	end
 
 	if clearLevel then
-		if slime then slime:remove() end
-		if walls then gfx.sprite.removeSprites(walls) end
-		if spikes then gfx.sprite.removeSprites(spikes) end
-		if goal then gfx.sprite.removeSprite(goal) end
+		if slime then
+			slime:remove()
+		end
+		if walls then
+			gfx.sprite.removeSprites(walls)
+		end
+		if spikes then
+			gfx.sprite.removeSprites(spikes)
+		end
+		if goal then
+			gfx.sprite.removeSprite(goal)
+		end
 
 		clearLevel = false
 	end
@@ -100,16 +108,22 @@ function pd.update()
 		-- assert(currentLevelIndex ~= nil)
 
 		-- local levelContent = LEVELS[currentLevelIndex].load()
-		local levelContent = LEVELS[1].load()
-		slime = levelContent.slime
+		-- local levelContent = LEVELS[1].load()
 		-- walls = levelContent.walls
 		-- spikes = levelContent.spikes
-		goal = levelContent.goal
+		-- goal = levelContent.goal
 
 		LDtk.load("world.ldtk")
 		LDtk.load_level("Level_0")
 		tilemap = LDtk.create_tilemap("Level_0")
 		local level = Level(tilemap)
+
+		for entity in All(LDtk.get_entities("Level_0")) do
+			if entity.name == "Slime" then
+				slime = Slime(entity.position.x, entity.position.y)
+			end
+		end
+		goal = Goal(120, 60, 20, 20)
 
 		startLevel = false
 	end
