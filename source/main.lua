@@ -32,7 +32,7 @@ local SCREEN_HEIGHT <const> = 240
 local slimeX = SCREEN_WIDTH / 2
 local slimeY = SCREEN_HEIGHT / 2
 
-local VELOCITY <const> = 20
+local VELOCITY <const> = 10
 
 local angle = 0
 local dx = 0
@@ -60,15 +60,18 @@ function pd.update()
 	slimeX += dx
 	slimeY += dy
 
+	-- TODO friction needs to be proportional to direction
 	if dx < 0 then
 		dx = math.min(0, dx + 0.2)
 	elseif dx > 0 then
 		dx = math.max(0, dx - 0.2)
 	end
-	if dy < 0 then
-		dy = math.min(0, dy + 0.2)
-	elseif dy > 0 then
-		dy = math.max(0, dy - 0.2)
+
+	if slimeY >= SCREEN_HEIGHT then
+		dy = 0
+		slimeY = SCREEN_HEIGHT
+	else
+		dy = math.min(dy + 0.2, 10)
 	end
 
 	if slimeY >= SCREEN_HEIGHT then
