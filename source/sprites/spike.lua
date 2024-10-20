@@ -9,7 +9,9 @@ function Spike:init(x, y, w, h)
 
     local spikesImage = gfx.image.new(w, h)
     gfx.pushContext(spikesImage)
-    gfx.drawRect(0, 0, w, h)
+    local spikeImage = gfx.image.new("images/spike")
+    assert(spikeImage, "could not find asset images/spike")
+    spikeImage:drawTiled(0, 0, w, h)
     gfx.popContext()
 
     self:setImage(spikesImage)
