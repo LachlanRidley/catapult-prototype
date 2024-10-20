@@ -176,12 +176,16 @@ function Setup()
 
 	-- set up game menu
 	local menu = playdate.getSystemMenu()
-	slime = Slime(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
-	slime:add()
+	slime = Slime(SCREEN_WIDTH / 2 - 30, SCREEN_HEIGHT / 2)
 
-	local wall = Wall(100, 150, 50, 25)
-	wall:add()
+	Wall(SCREEN_WIDTH / 2, SCREEN_HEIGHT - 12, 25, 25)
+	Wall(SCREEN_WIDTH / 2 + 25, SCREEN_HEIGHT - 12 - 25, 25, 25)
+	Wall(SCREEN_WIDTH / 2 + (25 * 2), SCREEN_HEIGHT - 12 - (25 * 2), 25, 25)
+	Wall(SCREEN_WIDTH / 2 + (25 * 3), SCREEN_HEIGHT - 12 - (25 * 3), 25, 25)
+	Wall(SCREEN_WIDTH / 2 + (25 * 4), SCREEN_HEIGHT - 12 - (25 * 4), 25, 25)
+	Wall(SCREEN_WIDTH / 2 + (25 * 5), SCREEN_HEIGHT - 12 - (25 * 5), 25, 25)
 
+	goal = Goal(SCREEN_WIDTH - 60, 150, 50, 50)
 	-- menu:addMenuItem("Restart game", function()
 	-- 	RestartGame()
 	-- end)
