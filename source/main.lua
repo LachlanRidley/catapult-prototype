@@ -28,7 +28,7 @@ pd.start()
 -- globals
 local SCREEN_WIDTH <const> = 400
 local SCREEN_HEIGHT <const> = 240
-local FRAME_RATE <const> = 30
+local FRAME_RATE <const> = 50
 local DT <const> = 1 / FRAME_RATE
 
 local MAX_VELOCITY = 280
