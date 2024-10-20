@@ -15,11 +15,15 @@ function Menu:update()
     elseif pd.buttonJustPressed(pd.kButtonUp) then
         self.switcher:previous()
     elseif pd.buttonIsPressed(pd.kButtonA) or pd.buttonIsPressed(pd.kButtonB) then
-        self.switcher:remove()
+        self:unload()
         LoadLevel(self.switcher.selectedLevelIndex)
     end
 
     gfx.sprite.update()
+end
+
+function Menu:unload()
+    self.switcher:remove()
 end
 
 ---@class LevelSwitcher

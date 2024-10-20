@@ -15,6 +15,7 @@ import("sprites/goal")
 
 import("scenes/game")
 import("scenes/menu")
+import("scenes/editor")
 
 import("levels")
 
@@ -48,6 +49,10 @@ function Setup()
 
 	-- set up game menu
 	local menu = playdate.getSystemMenu()
+	menu:addMenuItem("Editor", function()
+		CurrentScene:unload()
+		CurrentScene = Editor()
+	end)
 end
 
 function LoadLevel(levelIndex)

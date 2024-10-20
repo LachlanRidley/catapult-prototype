@@ -20,9 +20,21 @@ function Wall:init(x, y, w, h)
     self:setImage(wallImage)
 
     self:setCenter(0, 0)
-    self:moveTo(x, y)
-    self:setSize(w, h)
     self:setCollideRect(0, 0, self:getSize())
 
+    self:moveTo(x, y)
+
     self:add()
+end
+
+function Wall:resizeBy(dw, dh)
+    local w = self.width + dw
+    local h = self.height + dh
+
+    local wallImage = gfx.image.new(w, h)
+    gfx.pushContext(wallImage)
+    gfx.drawRect(0, 0, w, h)
+    gfx.popContext()
+    self:setImage(wallImage)
+    self:setCollideRect(0, 0, self:getSize())
 end
