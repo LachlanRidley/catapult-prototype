@@ -22,7 +22,6 @@ end
 
 function Game:update()
     if self.goal:getBoundsRect():containsPoint(self.slime:getPosition()) then
-        self:clearLevel()
         CompleteLevel(self.level)
 
         return

@@ -10,9 +10,9 @@ local timer <const> = pd.timer
 Editor = class("Editor").extends() or Editor
 
 function Editor:init()
-    -- self.wall = Wall(10, 10, 40, 40)
+    self.wall = Wall(10, 10, 40, 40)
     self.mode = "move"
-    self:load()
+    -- self:load()
 end
 
 function Editor:update()

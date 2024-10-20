@@ -45,17 +45,23 @@ function Setup()
 	-- set the game up
 	pd.display.setRefreshRate(FRAME_RATE)
 
-	CurrentScene = Menu()
+	LoadLevel(1)
 
 	-- set up game menu
 	local menu = playdate.getSystemMenu()
 	menu:addMenuItem("Editor", function()
-		CurrentScene:unload()
+		if CurrentScene ~= nil then CurrentScene:unload() end
 		CurrentScene = Editor()
+	end)
+	menu:addMenuItem("Level Select", function()
+		if CurrentScene ~= nil then CurrentScene:unload() end
+		CurrentScene = Menu()
 	end)
 end
 
 function LoadLevel(levelIndex)
+	if CurrentScene ~= nil then CurrentScene:unload() end
+
 	local selectedLevel = LEVELS[levelIndex]
 	assert(selectedLevel, "Level with index " .. levelIndex .. " does not exist")
 
@@ -63,6 +69,8 @@ function LoadLevel(levelIndex)
 end
 
 function CompleteLevel(level)
+	if CurrentScene ~= nil then CurrentScene:unload() end
+
 	local nextLevelIndex = level.order + 1
 	if nextLevelIndex > #LEVELS then
 		nextLevelIndex = 1

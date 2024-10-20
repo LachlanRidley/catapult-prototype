@@ -22,11 +22,15 @@ function Slime:init(x, y)
     self.velocity = pd.geometry.vector2D.new(0, 0)
     self:moveTo(x, y)
 
+    local slimeImage = gfx.image.new("images/slime")
+    assert(slimeImage, "could not find asset images/slime")
+
+    self:setImage(slimeImage)
+
+    self:setCollideRect(0, 0, self:getSize())
+
     self.angle = 0
     self.stuck = false
-
-    self:setSize(40, 40)
-    self:setCollideRect(15, 15, 10, 10)
 
     self:add()
 end
