@@ -10,8 +10,9 @@ local timer <const> = pd.timer
 Editor = class("Editor").extends() or Editor
 
 function Editor:init()
-    self.wall = Wall(10, 10, 40, 40)
+    -- self.wall = Wall(10, 10, 40, 40)
     self.mode = "move"
+    self:load()
 end
 
 function Editor:update()
@@ -46,6 +47,32 @@ function Editor:update()
     if pd.buttonJustPressed(pd.kButtonB) then
         self.mode = self.mode == "move" and "resize" or "move"
     end
+
+    if pd.buttonIsPressed(pd.kButtonA) then
+        self:save()
+    end
+
     gfx.sprite.update()
     timer.updateTimers()
+end
+
+function Editor:load()
+    local level = pd.datastore.read("custom-level")
+    assert(level, "No level file found")
+
+    self.wall = Wall(level.walls[1].x, level.walls[1].y, level.walls[1].w, level.walls[1].h)
+end
+
+function Editor:save()
+    local level = {
+        walls = {
+            {
+                x = self.wall.x,
+                y = self.wall.y,
+                w = self.wall.width,
+                h = self.wall.height,
+            }
+        }
+    }
+    pd.datastore.write(level, "custom-level")
 end
