@@ -14,6 +14,24 @@ def run():
     run_internal()
 
 
+@cli.command()
+def assets():
+    if shutil.which("Aseprite") is None:
+        raise Exception("Aseprite is not on path; install Aseprite")
+
+    # TODO delete contents of image folder before rebuilding
+
+    subprocess.run(
+        [
+            "Aseprite",
+            "-b",
+            "support/spike.aseprite",
+            "--save-as",
+            "source/images/spike.png",
+        ]
+    )
+
+
 def build():
     if shutil.which("pdc") is None:
         raise Exception("pdc is not on path; install PlayDate SDK")
