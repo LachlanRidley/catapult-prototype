@@ -59,7 +59,7 @@ function Game:startLevel()
 end
 
 function Game:clearLevel()
-    if self.slime then gfx.sprite.removeSprite(self.slime) end
+    if self.slime then self.slime:remove() end
     if self.walls then gfx.sprite.removeSprites(self.walls) end
     if self.spikes then gfx.sprite.removeSprites(self.spikes) end
     if self.goal then gfx.sprite.removeSprite(self.goal) end
