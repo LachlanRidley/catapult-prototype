@@ -1,3 +1,8 @@
 *.pdx
 .sentry-native
 source/*.png
+
+# python build tools files
+__pycache__
+build
+playdatetools.egg-info
