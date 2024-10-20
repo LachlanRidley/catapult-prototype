@@ -31,6 +31,8 @@ local SCREEN_HEIGHT <const> = 240
 local FRAME_RATE <const> = 50
 local DT <const> = 1 / FRAME_RATE
 
+local DEBUG <const> = false
+
 local MAX_VELOCITY = 280
 local GRAVITY_CONSTANT = 1680
 local GRAVITY_STEP = pd.geometry.vector2D.new(0, GRAVITY_CONSTANT * DT)
@@ -249,11 +251,13 @@ function pd.update()
 
 	gfx.sprite.update()
 
-	gfx.drawText("angle " .. slime.angle, 10, 10)
-	gfx.drawText("dx " .. slime.velocity.dx, 10, 30)
-	gfx.drawText("stuck " .. tostring(slime.stuck), 10, 50)
-	gfx.drawText("won? " .. tostring(won), 10, 70)
-	gfx.drawText("dead? " .. tostring(dead), 10, 90)
+	if DEBUG then
+		gfx.drawText("angle " .. slime.angle, 10, 10)
+		gfx.drawText("dx " .. slime.velocity.dx, 10, 30)
+		gfx.drawText("stuck " .. tostring(slime.stuck), 10, 50)
+		gfx.drawText("won? " .. tostring(won), 10, 70)
+		gfx.drawText("dead? " .. tostring(dead), 10, 90)
+	end
 
 	timer.updateTimers()
 end
