@@ -6,8 +6,8 @@ local function loadJump()
     local wallWidth = SCREEN_WIDTH / 2 - 45
     local wallHeight = SCREEN_HEIGHT * 0.6
     level.walls = {
-        Wall(0, SCREEN_HEIGHT - wallHeight, wallWidth, wallHeight),
-        Wall(SCREEN_WIDTH - wallWidth, SCREEN_HEIGHT - wallHeight, wallWidth, SCREEN_HEIGHT)
+        -- Wall(0, SCREEN_HEIGHT - wallHeight, wallWidth, wallHeight),
+        -- Wall(SCREEN_WIDTH - wallWidth, SCREEN_HEIGHT - wallHeight, wallWidth, SCREEN_HEIGHT)
     }
 
     level.goal = Goal(SCREEN_WIDTH - 30, 76, 40, 40)
