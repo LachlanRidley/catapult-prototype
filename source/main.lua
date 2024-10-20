@@ -13,6 +13,10 @@ import("sprites/wall")
 import("sprites/spike")
 import("sprites/goal")
 
+import("scenes/game")
+
+import("levels")
+
 import("test")
 import("utils/all")
 
@@ -33,18 +37,6 @@ print("unit test return value = " .. returnValue)
 
 pd.start()
 
--- play state
-local won = false
-local dead = false
----@type Slime
-local slime = nil
----@type Goal
-local goal = nil
----@type Spikes[]
-local spikes = {}
----@type Wall[]
-local walls = {}
-
 local currentScene
 function Setup()
 	-- set the game up
@@ -56,107 +48,12 @@ function Setup()
 	local menu = playdate.getSystemMenu()
 end
 
-function LoadJump()
-	slime = Slime(10, 10)
-
-	local wallWidth = SCREEN_WIDTH / 2 - 45
-	local wallHeight = SCREEN_HEIGHT * 0.6
-	walls = {
-		Wall(0, SCREEN_HEIGHT - wallHeight, wallWidth, wallHeight),
-		Wall(SCREEN_WIDTH - wallWidth, SCREEN_HEIGHT - wallHeight, wallWidth, SCREEN_HEIGHT)
-	}
-
-	goal = Goal(SCREEN_WIDTH - 30, 76, 40, 40)
+function UnloadLevel(level)
+	gfx.sprite.removeSprite(level.slime)
+	gfx.sprite.removeSprites(level.walls)
+	gfx.sprite.removeSprites(level.spikes or {})
+	gfx.sprite.removeSprite(level.goal)
 end
-
-function LoadTheClimb()
-	slime = Slime(SCREEN_WIDTH / 2, SCREEN_HEIGHT - 20)
-
-	local wallWidth = SCREEN_WIDTH / 2 - 45
-	walls = {
-		Wall(0, 0, wallWidth, SCREEN_HEIGHT),
-		Wall(SCREEN_WIDTH - wallWidth, 0, wallWidth, SCREEN_HEIGHT)
-	}
-
-	goal = Goal(SCREEN_WIDTH / 2, 10, SCREEN_WIDTH - (wallWidth * 2), 20)
-end
-
-function LoadPlayground()
-	slime = Slime(SCREEN_WIDTH / 2 - 30, SCREEN_HEIGHT / 2)
-
-	walls = {
-		Wall(SCREEN_WIDTH / 2, SCREEN_HEIGHT - 25, 25, 25),
-		Wall(SCREEN_WIDTH / 2 + 25, SCREEN_HEIGHT - 25 - 25, 25, 25),
-		Wall(SCREEN_WIDTH / 2 + (25 * 2), SCREEN_HEIGHT - 25 - (25 * 2), 25, 25),
-		Wall(SCREEN_WIDTH / 2 + (25 * 3), SCREEN_HEIGHT - 25 - (25 * 3), 25, 25),
-		Wall(SCREEN_WIDTH / 2 + (25 * 4), SCREEN_HEIGHT - 25 - (25 * 4), 25, 25),
-		Wall(SCREEN_WIDTH / 2 + (25 * 5), SCREEN_HEIGHT - 25 - (25 * 5), 25, 25)
-	}
-
-	spikes = { Spike(10, 10, 20, SCREEN_HEIGHT - 20) }
-
-	goal = Goal(SCREEN_WIDTH - 60, 150, 50, 50)
-end
-
-function UnloadLevel()
-	gfx.sprite.removeSprite(slime)
-	gfx.sprite.removeSprites(walls)
-	gfx.sprite.removeSprites(spikes)
-	gfx.sprite.removeSprite(goal)
-end
-
----@class Scene
-Scene = class("Scene").extends() or Scene
-
-function Scene:init(selectedLevelIndex)
-	self.selectedLevelIndex = selectedLevelIndex
-	LEVELS[self.selectedLevelIndex].loader()
-end
-
-function Scene:update()
-	if goal:getBoundsRect():containsPoint(slime:getPosition()) then
-		won = true
-		UnloadLevel()
-		self.selectedLevelIndex += 1
-		if self.selectedLevelIndex > #LEVELS then
-			self.selectedLevelIndex = 1
-		end
-
-		LEVELS[self.selectedLevelIndex].loader()
-	else
-		goal:add()
-	end
-
-	for spike in All(spikes) do
-		if spike:getBoundsRect():containsPoint(slime:getPosition()) then
-			dead = true
-			slime:remove()
-		end
-	end
-
-	gfx.sprite.update()
-
-	if DEBUG then
-		gfx.drawText("angle " .. slime.angle, 10, 10)
-		gfx.drawText("dx " .. slime.velocity.dx, 10, 30)
-		gfx.drawText("stuck " .. tostring(slime.stuck), 10, 50)
-		gfx.drawText("won? " .. tostring(won), 10, 70)
-		gfx.drawText("dead? " .. tostring(dead), 10, 90)
-	end
-
-	timer.updateTimers()
-end
-
-LEVELS = { {
-	name = "Jump!",
-	loader = LoadJump
-}, {
-	name = "The Climb",
-	loader = LoadTheClimb
-}, {
-	name = "Playground",
-	loader = LoadPlayground
-} }
 
 ---@class Menu
 Menu = class("Menu").extends() or Menu
@@ -186,7 +83,7 @@ function Menu:update()
 		self.menuText:setImage(self.levelTexts[self.selectedLevelIndex])
 	elseif pd.buttonIsPressed(pd.kButtonA) then
 		self.menuText:remove()
-		currentScene = Scene(self.selectedLevelIndex)
+		currentScene = Game(self.selectedLevelIndex)
 	end
 
 	gfx.sprite.update()
