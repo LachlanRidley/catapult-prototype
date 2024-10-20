@@ -204,8 +204,7 @@ function Setup()
 	-- set the game up
 	pd.display.setRefreshRate(FRAME_RATE)
 
-	currentScene = Scene()
-	LoadTheClimb()
+	currentScene = Menu()
 
 	-- set up game menu
 	local menu = playdate.getSystemMenu()
@@ -236,8 +235,8 @@ function LoadPlayground()
 	goal = Goal(SCREEN_WIDTH - 60, 150, 50, 50)
 end
 
----@class Scene: _Sprite
-Scene = class("Scene").extends(gfx.sprite) or Scene
+---@class Scene
+Scene = class("Scene").extends() or Scene
 
 function Scene:update()
 	if goal:getBoundsRect():containsPoint(slime:getPosition()) then
@@ -265,6 +264,37 @@ function Scene:update()
 	end
 
 	timer.updateTimers()
+end
+
+LEVELS = { {
+	name = "Playground",
+	loader = LoadPlayground
+}, {
+	name = "The Climb",
+	loader = LoadTheClimb
+} }
+
+---@class Menu
+Menu = class("Menu").extends() or Menu
+
+function Menu:init()
+	self.selectedLevelIndex = 1
+end
+
+function Menu:update()
+	local selectedLevel = LEVELS[self.selectedLevelIndex]
+	gfx.drawText(selectedLevel.name, 10, 10)
+
+	if pd.buttonJustPressed(pd.kButtonDown) then
+		gfx.clear()
+		self.selectedLevelIndex = self.selectedLevelIndex + 1
+		if self.selectedLevelIndex > #LEVELS then
+			self.selectedLevelIndex = 1
+		end
+	elseif pd.buttonIsPressed(pd.kButtonA) then
+		selectedLevel:loader()
+		currentScene = Scene()
+	end
 end
 
 function pd.update()
