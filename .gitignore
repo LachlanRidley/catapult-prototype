@@ -5,4 +5,9 @@ source/*.png
 # python build tools files
 __pycache__
 build
+playdatetools.egg-info/luarocks.bat
 playdatetools.egg-info
+/lua.bat
+/lua_modules
+/.luarocks
+/luarocks.bat
