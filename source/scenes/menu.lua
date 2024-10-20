@@ -29,7 +29,7 @@ function Menu:update()
         self.menuText:setImage(self.levelTexts[self.selectedLevelIndex])
     elseif pd.buttonIsPressed(pd.kButtonA) then
         self.menuText:remove()
-        CurrentScene = Game(self.selectedLevelIndex)
+        LoadLevel(self.selectedLevelIndex)
     end
 
     gfx.sprite.update()
