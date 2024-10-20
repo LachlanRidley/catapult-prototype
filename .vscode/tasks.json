@@ -1,0 +1,31 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "compile images",
+      "type": "shell",
+      "command": "Aseprite.exe support/nought.aseprite --batch --save-as source/nought.png; aseprite.exe support/cross.aseprite --batch --save-as source/cross.png",
+      "problemMatcher": []
+    },
+    {
+      "type": "pdc",
+      "problemMatcher": ["$pdc-lua", "$pdc-external"],
+      "label": "Playdate: Build"
+    },
+    {
+      "type": "playdate-simulator",
+      "problemMatcher": ["$pdc-external"],
+      "label": "Playdate: Run"
+    },
+    {
+      "label": "Playdate: Build and Run",
+      "dependsOn": ["Playdate: Build", "Playdate: Run"],
+      "dependsOrder": "sequence",
+      "problemMatcher": [],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      }
+    }
+  ]
+}
