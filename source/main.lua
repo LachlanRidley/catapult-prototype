@@ -227,7 +227,7 @@ function LoadPlayground()
 	Wall(SCREEN_WIDTH / 2 + (25 * 4), SCREEN_HEIGHT - 25 - (25 * 4), 25, 25)
 	Wall(SCREEN_WIDTH / 2 + (25 * 5), SCREEN_HEIGHT - 25 - (25 * 5), 25, 25)
 
-	SpikesList = {Spikes(10, 10, 20, SCREEN_HEIGHT - 20)}
+	SpikesList = { Spikes(10, 10, 20, SCREEN_HEIGHT - 20) }
 
 	goal = Goal(SCREEN_WIDTH - 60, 150, 50, 50)
 end
@@ -244,7 +244,7 @@ function pd.update()
 		if spike:getBoundsRect():containsPoint(slime:getPosition()) then
 			dead = true
 			slime:remove()
-		end	
+		end
 	end
 
 	gfx.sprite.update()
