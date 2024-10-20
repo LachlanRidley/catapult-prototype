@@ -12,6 +12,10 @@ local function loadJump()
 
     level.goal = Goal(SCREEN_WIDTH - 30, 76, 40, 40)
 
+    level.spikes = {
+        Spike(wallWidth, SCREEN_HEIGHT - 8, SCREEN_WIDTH - wallWidth * 2, 8)
+    }
+
     return level
 end
 
