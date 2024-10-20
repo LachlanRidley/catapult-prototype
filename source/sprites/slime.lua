@@ -1,6 +1,6 @@
 import('globals')
 import("CoreLibs/sprites")
-import("utils/animatedimage")
+import("CoreLibs/animation")
 
 local pd <const> = playdate
 local gfx <const> = pd.graphics

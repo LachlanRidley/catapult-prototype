@@ -14,6 +14,7 @@ import("sprites/spike")
 import("sprites/goal")
 
 import("scenes/game")
+import "scenes/game-better"
 import("scenes/menu")
 import("scenes/editor")
 
@@ -65,7 +66,7 @@ function LoadLevel(levelIndex)
 	local selectedLevel = LEVELS[levelIndex]
 	assert(selectedLevel, "Level with index " .. levelIndex .. " does not exist")
 
-	CurrentScene = Game(selectedLevel)
+	CurrentScene = GameBetter(selectedLevel)
 end
 
 function CompleteLevel(level)
