@@ -1,12 +1,12 @@
-import 'luaunit/playdate_luaunit_fix'
-import 'luaunit/luaunit'
+import("luaunit/playdate_luaunit_fix")
+import("luaunit/luaunit")
 
-import "CoreLibs/object"
-import "CoreLibs/graphics"
-import "CoreLibs/sprites"
-import "CoreLibs/timer"
+import("CoreLibs/object")
+import("CoreLibs/graphics")
+import("CoreLibs/sprites")
+import("CoreLibs/timer")
 
-import "test"
+import("test")
 
 local pd <const> = playdate
 local gfx <const> = pd.graphics
@@ -17,11 +17,11 @@ pd.stop()
 
 -- TODO probably want to make these only run in simulator
 luaunit.PRINT_TABLE_REF_IN_ERROR_MSG = true
-local luaunit_args = { '--output', 'text', '--verbose', '-r' }
+local luaunit_args = { "--output", "text", "--verbose", "-r" }
 
 local returnValue = luaunit.LuaUnit.run(table.unpack(luaunit_args))
 
-print("unit test return value = " .. returnValue);
+print("unit test return value = " .. returnValue)
 
 pd.start()
 
@@ -41,18 +41,25 @@ local FRICTION_CONSTANT <const> = 0.1
 
 ---@class Wall: _Sprite
 Wall = class("Wall").extends(gfx.sprite) or Wall
+
+---creates a new wall object
+---@param x integer
+---@param y integer
+---@param w integer
+---@param h integer
 function Wall:init(x, y, w, h)
-  Wall.super.init(self)
-  self:moveTo(x, y)
-  self:setSize(w, h)
+	Wall.super.init(self)
+	self:moveTo(x, y)
+	self:setSize(w, h)
+	self:setCollideRect(0, 0, self:getSize())
 end
 
 function Wall:draw(x, y, w, h)
-  gfx.drawRoundRect(x, y, w, h, 5)
+	gfx.drawRoundRect(x, y, w, h, 5)
 end
 
 ---@class Slime: _Sprite
-Slime = class('Slime').extends(gfx.sprite) or Slime
+Slime = class("Slime").extends(gfx.sprite) or Slime
 
 ---@type Slime
 local slime = nil
@@ -65,6 +72,7 @@ function Slime:init(x, y)
 	self.angle = 0
 
 	self:setSize(40, 40)
+	self:setCollideRect(15, 15, 10, 10)
 end
 
 function Slime:update()
@@ -79,19 +87,19 @@ function Slime:update()
 	self.velocity = self.velocity + self.velocity:scaledBy(-FRICTION_CONSTANT)
 
 	local velocityStep = self.velocity * DT
-	self:moveTo(self.x + velocityStep.dx, self.y + velocityStep.dy)
+	self:moveWithCollisions(self.x + velocityStep.dx, self.y + velocityStep.dy)
 
 	if self.y >= SCREEN_HEIGHT then
 		self.velocity.dy = 0
 		self.velocity.dx = 0
-		self:moveTo(self.x, SCREEN_HEIGHT)
+		self:moveWithCollisions(self.x, SCREEN_HEIGHT)
 	end
 
 	if self.x <= 0 then
-		self:moveTo(0, self.y)
+		self:moveWithCollisions(0, self.y)
 		self.velocity.dx = -self.velocity.dx
 	elseif self.x >= SCREEN_WIDTH then
-		self:moveTo(SCREEN_WIDTH, self.y)
+		self:moveWithCollisions(SCREEN_WIDTH, self.y)
 		self.velocity.dx = -self.velocity.dx
 	end
 
@@ -118,8 +126,8 @@ function Setup()
 	slime = Slime(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
 	slime:add()
 
-  local wall = Wall(100, 50, 50, 25)
-  wall:add()
+	local wall = Wall(100, 150, 50, 25)
+	wall:add()
 
 	-- menu:addMenuItem("Restart game", function()
 	-- 	RestartGame()
