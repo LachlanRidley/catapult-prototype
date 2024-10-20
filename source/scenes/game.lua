@@ -17,12 +17,12 @@ Game = class("Game").extends() or Game
 function Game:init(level)
     self.level = level
 
-    self:StartLevel()
+    self:startLevel()
 end
 
 function Game:update()
     if self.goal:getBoundsRect():containsPoint(self.slime:getPosition()) then
-        self:ClearLevel()
+        self:clearLevel()
         CompleteLevel(self.level)
 
         return
@@ -30,7 +30,7 @@ function Game:update()
 
     for spike in All(self.spikes or {}) do
         if spike:getBoundsRect():containsPoint(self.slime:getPosition()) then
-            self:StartLevel()
+            self:startLevel()
         end
     end
 
@@ -46,11 +46,11 @@ function Game:update()
 end
 
 function Game:unload()
-    self:ClearLevel()
+    self:clearLevel()
 end
 
-function Game:StartLevel()
-    self:ClearLevel()
+function Game:startLevel()
+    self:clearLevel()
 
     local levelContent = self.level.load()
     self.slime = levelContent.slime
@@ -59,7 +59,7 @@ function Game:StartLevel()
     self.goal = levelContent.goal
 end
 
-function Game:ClearLevel()
+function Game:clearLevel()
     if self.slime then gfx.sprite.removeSprite(self.slime) end
     if self.walls then gfx.sprite.removeSprites(self.walls) end
     if self.spikes then gfx.sprite.removeSprites(self.spikes) end
