@@ -126,8 +126,10 @@ function pd.update()
 			if entity.name == "Slime" then
 				slime = Slime(entity.position.x, entity.position.y)
 			end
+			if entity.name == "Exit" then
+				goal = Goal(entity.position.x, entity.position.y, entity.size.width, entity.size.height)
+			end
 		end
-		goal = Goal(120, 60, 20, 20)
 
 		startLevel = false
 	end

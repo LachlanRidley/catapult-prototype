@@ -6,6 +6,7 @@ Goal = class("Goal").extends(gfx.sprite) or Goal
 
 function Goal:init(x, y, w, h)
     Goal.super.init(self)
+    self:setCenter(0, 0)
     self:moveTo(x, y)
     self:setSize(w, h)
 
