@@ -34,18 +34,6 @@ local GameState = {
 	SetupMenu = 3,
 }
 
-pd.stop()
-
--- TODO probably want to make these only run in simulator
-luaunit.PRINT_TABLE_REF_IN_ERROR_MSG = true
-local luaunit_args = { "--output", "text", "--verbose", "-r" }
-
-local returnValue = luaunit.LuaUnit.run(table.unpack(luaunit_args))
-
-print("unit test return value = " .. returnValue)
-
-pd.start()
-
 ---@type Level | nil
 local level
 ---@type Slime | nil
@@ -67,6 +55,19 @@ local clearLevel = false
 local startLevel = false
 local state = GameState.SetupMenu
 local currentLevelIndex = nil
+
+function RunTests()
+	pd.stop()
+
+	luaunit.PRINT_TABLE_REF_IN_ERROR_MSG = true
+	local luaunit_args = { "--output", "text", "--verbose", "-r" }
+
+	local returnValue = luaunit.LuaUnit.run(table.unpack(luaunit_args))
+
+	print("unit test return value = " .. returnValue)
+
+	pd.start()
+end
 
 function Setup()
 	pd.display.setRefreshRate(FRAME_RATE)
@@ -172,6 +173,10 @@ function pd.update()
 		gfx.drawText("stuck " .. tostring(slime.stuck), 10, 50)
 	end
 	timer.updateTimers()
+end
+
+if pd.isSimulator then
+	RunTests()
 end
 
 Setup()
