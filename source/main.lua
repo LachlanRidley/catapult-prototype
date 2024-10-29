@@ -117,7 +117,10 @@ function pd.update()
 		LDtk.load("world.ldtk")
 		LDtk.load_level("Level_0")
 		tilemap = LDtk.create_tilemap("Level_0")
+		assert(tilemap, "Tilemap was nil")
+
 		local level = Level(tilemap)
+		gfx.sprite.addWallSprites(tilemap, {})
 
 		for entity in All(LDtk.get_entities("Level_0")) do
 			if entity.name == "Slime" then
